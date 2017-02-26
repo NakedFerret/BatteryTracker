@@ -1,0 +1,14 @@
+# This is a sample build configuration for Gradle.
+# Check our guides at https://confluence.atlassian.com/x/VYk8Lw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: beevelop/android
+
+pipelines:
+  default:
+    - step:
+        script: # Modify the commands below to build your repository.
+          - mkdir -p "$ANDROID_HOME/licenses"
+          - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+          - ./gradlew build
