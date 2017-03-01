@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         LineData lineData = new LineData(dataSet);
         chart.setData(lineData);
         chart.invalidate();
-c
+
         exportButton = (Button) findViewById(R.id.exportButton);
         exportButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +53,7 @@ c
             File file = new File(getExternalFilesDir(null), "battery-tracker-test-file.txt");
             try {
                 OutputStream output = new FileOutputStream(file);
-                String outputText = "Hello World";
+                String outputText = "Hello World" + '\n';
                 output.write(outputText.getBytes("UTF-8"));
                 output.close();
             } catch (IOException e) {
