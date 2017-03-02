@@ -1,7 +1,7 @@
 package in.andreani.batterytracker;
 
 /**
- * Created by gonzalo on 2/26/17.
+ * Created by Gonzalo Andreani on 2/26/17.
  */
 
 public class Data {

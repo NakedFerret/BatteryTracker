@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+/**
+ * Created by Gonzalo Andreani on 2/26/17.
+ */
+
 public class HomeActivity extends AppCompatActivity {
 
     private LineChart chart;
