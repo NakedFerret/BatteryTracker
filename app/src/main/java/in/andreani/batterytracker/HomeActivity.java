@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import in.andreani.batterytracker.model.LogRecord;
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 /**
  * Created by Gonzalo Andreani on 2/26/17.
  */
@@ -47,6 +51,21 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.beginTransaction();
+
+        LogRecord screenRecord = LogRecord.getScreenRecord(1);
+        LogRecord idleRecord = LogRecord.getIdleRecord(1);
+
+        realm.copyToRealm(screenRecord);
+        realm.copyToRealm(idleRecord);
+
+        realm.commitTransaction();
+
+        RealmResults<LogRecord> allRecords = realm.where(LogRecord.class).findAll();
+
+        Log.d(getApplication().getPackageName(), "Found #" + allRecords.size() + " records");
     }
 
     public void writeTestOuputFile() {
