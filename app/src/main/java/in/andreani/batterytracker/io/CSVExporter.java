@@ -7,13 +7,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import in.andreani.batterytracker.model.LogRecord;
+import io.realm.RealmResults;
+
 /**
  * Created by Gonzalo Andreani on 3/2/17.
  */
 
 public class CSVExporter {
 
-    public static final String EXPORT_CSV_FILENAME = "battery-tracker-test-file.txt";
+    public static final String EXPORT_CSV_FILENAME = "battery-tracker-log.csv";
 
     private File outputDir;
 
@@ -21,20 +24,22 @@ public class CSVExporter {
         this.outputDir = outputDir;
     }
 
-    public void exportRecords() {
+    public void exportRecords(RealmResults<LogRecord> allLogRecords) {
         if (this.isExternalStorageMounted()) {
             File file = new File(this.outputDir, EXPORT_CSV_FILENAME);
             try {
                 BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                String outputText = "Hello World";
-                output.write(outputText);
-                output.newLine();
+                for (LogRecord record : allLogRecords) {
+                    String row = record.type + ',' +
+                            record.time + ',' +
+                            record.value;
+                    output.write(row);
+                    output.newLine();
+                }
                 output.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // Toast.makeText(this, "Could NOT write output file", Toast.LENGTH_LONG).show();
         }
     }
 
