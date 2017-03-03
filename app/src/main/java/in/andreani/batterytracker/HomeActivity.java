@@ -2,7 +2,6 @@ package in.andreani.batterytracker;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -11,7 +10,6 @@ import com.github.mikephil.charting.charts.LineChart;
 import in.andreani.batterytracker.io.CSVExporter;
 import in.andreani.batterytracker.model.LogRecord;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * Created by Gonzalo Andreani on 2/26/17.
@@ -38,22 +36,19 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        Realm realm = Realm.getDefaultInstance();
-
-        realm.beginTransaction();
-
-        LogRecord screenRecord = LogRecord.getScreenRecord(1);
-        LogRecord idleRecord = LogRecord.getIdleRecord(1);
-
-        realm.copyToRealm(screenRecord);
-        realm.copyToRealm(idleRecord);
-
-        realm.commitTransaction();
-
-        RealmResults<LogRecord> allRecords = realm.where(LogRecord.class).findAll();
-
-        Log.d(getApplication().getPackageName(), "Found #" + allRecords.size() + " records");
+        this.asyncSaveFakeRecords();
     }
 
+    private void asyncSaveFakeRecords() {
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(LogRecord.getScreenRecord(1));
+                realm.copyToRealm(LogRecord.getIdleRecord(1));
+            }
+        });
+    }
 
 }
