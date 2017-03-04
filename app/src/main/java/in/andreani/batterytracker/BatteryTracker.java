@@ -1,9 +1,10 @@
 package in.andreani.batterytracker;
 
-import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
+import android.content.Intent;
+import android.content.IntentFilter;
 
+import in.andreani.batterytracker.receivers.BatteryReceiver;
 import io.realm.Realm;
 
 /**
@@ -14,6 +15,10 @@ public class BatteryTracker extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(new BatteryReceiver(), filter);
 
         Realm.init(this);
     }
