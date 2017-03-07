@@ -7,11 +7,18 @@ import android.view.View;
 import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import in.andreani.batterytracker.io.CSVExporter;
 import in.andreani.batterytracker.model.LogRecord;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by Gonzalo Andreani on 2/26/17.
@@ -40,19 +47,26 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        this.asyncSaveFakeRecords();
-    }
-
-    private void asyncSaveFakeRecords() {
         Realm realm = Realm.getDefaultInstance();
 
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.copyToRealm(LogRecord.getScreenRecord(1));
-                realm.copyToRealm(LogRecord.getIdleRecord(1));
+                RealmResults<LogRecord> sortedMaxBatteries = realm.where(LogRecord.class)
+                        .equalTo("type", "Battery")
+                        .equalTo("value", 100L)
+                        .findAllSorted("time", Sort.DESCENDING);
+
+                sortedMaxBatteries.load();
+
+                LogRecord lastFull = sortedMaxBatteries.first();
+
+                RealmResults<LogRecord> lastFullReadings = realm.where(LogRecord.class)
+                        .greaterThanOrEqualTo("time", lastFull.time)
+                        .findAll();
             }
         });
+
     }
 
     private class CSVExportTask extends AsyncTask<Void, Void, Void> {
