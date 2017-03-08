@@ -7,10 +7,15 @@ import android.view.View;
 import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +104,15 @@ public class HomeActivity extends AppCompatActivity {
             LineDataSet batteryDataSet = new LineDataSet(entries, "Battery");
             LineData data = new LineData(batteryDataSet);
             HomeActivity.this.chart.setData(data);
+            XAxis xAxis = HomeActivity.this.chart.getXAxis();
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+                private DateFormat DATE_FORMAT = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    return DATE_FORMAT.format(value);
+                }
+            });
             HomeActivity.this.chart.invalidate();
         }
     }
