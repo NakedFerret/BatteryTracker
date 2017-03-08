@@ -17,6 +17,7 @@ import java.util.List;
 import in.andreani.batterytracker.io.CSVExporter;
 import in.andreani.batterytracker.model.LogRecord;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -30,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button exportButton;
     private CSVExporter csvExporter;
     private CSVExportTask exportTask;
+    private ChartLoadingTask chartLoadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,26 +49,58 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        Realm realm = Realm.getDefaultInstance();
+        chart = (LineChart) findViewById(R.id.chart);
+        chartLoadTask = new ChartLoadingTask();
+        chartLoadTask.execute();
+    }
 
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmResults<LogRecord> sortedMaxBatteries = realm.where(LogRecord.class)
-                        .equalTo("type", "Battery")
-                        .equalTo("value", 100L)
-                        .findAllSorted("time", Sort.DESCENDING);
+    private class ChartLoadingTask extends AsyncTask<Void, Void, List<Entry>> {
 
+        @Override
+        protected List<Entry> doInBackground(Void... params) {
+            Realm realm = Realm.getDefaultInstance();
+
+            RealmResults<LogRecord> sortedMaxBatteries = realm.where(LogRecord.class)
+                    .equalTo("type", "Battery")
+                    .equalTo("value", 100L)
+                    .findAllSorted("time", Sort.DESCENDING);
+
+            RealmQuery<LogRecord> query = realm.where(LogRecord.class);
+
+            if (!sortedMaxBatteries.isEmpty()) {
                 sortedMaxBatteries.load();
-
                 LogRecord lastFull = sortedMaxBatteries.first();
-
-                RealmResults<LogRecord> lastFullReadings = realm.where(LogRecord.class)
-                        .greaterThanOrEqualTo("time", lastFull.time)
-                        .findAll();
+                query.greaterThanOrEqualTo("time", lastFull.time);
             }
-        });
 
+            RealmResults<LogRecord> records = query.findAll();
+
+            records.load();
+
+            List<Entry> entries = new ArrayList<Entry>();
+
+            for (LogRecord record : records) {
+                if (!record.type.equals(LogRecord.TYPE_BATTERY))
+                    continue;
+
+                entries.add(new Entry(record.time, record.value));
+            }
+
+            return entries;
+        }
+
+        @Override
+        protected void onPostExecute(List<Entry> entries) {
+
+            if (entries.isEmpty()) {
+                return;
+            }
+
+            LineDataSet batteryDataSet = new LineDataSet(entries, "Battery");
+            LineData data = new LineData(batteryDataSet);
+            HomeActivity.this.chart.setData(data);
+            HomeActivity.this.chart.invalidate();
+        }
     }
 
     private class CSVExportTask extends AsyncTask<Void, Void, Void> {

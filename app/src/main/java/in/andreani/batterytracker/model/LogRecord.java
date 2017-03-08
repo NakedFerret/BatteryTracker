@@ -8,6 +8,10 @@ import io.realm.RealmObject;
 
 public class LogRecord extends RealmObject {
 
+    public static final String TYPE_BATTERY = "Battery";
+    public static final String TYPE_SCREEN = "Screen";
+    public static final String TYPE_IDLE = "Idle";
+
     public String type;
     public long time;
     public long value;
@@ -22,15 +26,15 @@ public class LogRecord extends RealmObject {
     }
 
     public static LogRecord getBatteryRecord(long value) {
-        return new LogRecord("Battery", System.currentTimeMillis(), value);
+        return new LogRecord(TYPE_BATTERY, System.currentTimeMillis(), value);
     }
 
     public static LogRecord getScreenRecord(long value) {
-        return new LogRecord("Screen", System.currentTimeMillis(), value);
+        return new LogRecord(TYPE_SCREEN, System.currentTimeMillis(), value);
     }
 
     public static LogRecord getIdleRecord(long value) {
-        return new LogRecord("Idle", System.currentTimeMillis(), value);
+        return new LogRecord(TYPE_IDLE, System.currentTimeMillis(), value);
     }
 
 }
