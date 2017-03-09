@@ -11,7 +11,6 @@ import io.realm.Realm;
 public class BatteryReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-
         Realm realm = Realm.getDefaultInstance();
 
         float level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);

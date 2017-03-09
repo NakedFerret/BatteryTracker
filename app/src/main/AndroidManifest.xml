@@ -19,7 +19,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".receivers.BatteryReceiver" />
+
+        <receiver android:name=".receivers.BatteryReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BATTERY_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".services.LoggingService"
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>
