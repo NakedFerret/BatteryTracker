@@ -56,6 +56,15 @@ public class HomeActivity extends AppCompatActivity {
 
         chart = (LineChart) findViewById(R.id.chart);
         chartLoadTask = new ChartLoadingTask();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (chartLoadTask != null) {
+            chartLoadTask.cancel(true);
+        }
+        chartLoadTask = new ChartLoadingTask();
         chartLoadTask.execute();
     }
 
