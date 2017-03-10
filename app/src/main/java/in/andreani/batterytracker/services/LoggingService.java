@@ -9,6 +9,8 @@ import in.andreani.batterytracker.receivers.BatteryReceiver;
 
 public class LoggingService extends Service {
 
+    private BatteryReceiver batteryReceiver;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startBatteryReceiver();
@@ -16,9 +18,22 @@ public class LoggingService extends Service {
     }
 
     private void startBatteryReceiver() {
+        if (batteryReceiver != null) {
+            return;
+        }
+
+        batteryReceiver = new BatteryReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(new BatteryReceiver(), filter);
+        registerReceiver(batteryReceiver, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (batteryReceiver != null) {
+            unregisterReceiver(batteryReceiver);
+        }
     }
 
     @Override
