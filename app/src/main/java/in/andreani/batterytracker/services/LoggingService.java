@@ -2,19 +2,29 @@ package in.andreani.batterytracker.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.IBinder;
 
 import in.andreani.batterytracker.receivers.BatteryReceiver;
+import in.andreani.batterytracker.receivers.ScreenReceiver;
 
 public class LoggingService extends Service {
 
+    private ScreenReceiver screenReceiver;
     private BatteryReceiver batteryReceiver;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startBatteryReceiver();
+        startScreenReceiver();
         return START_STICKY;
+    }
+
+    private void startScreenReceiver() {
+        if (screenReceiver != null) {
+            return;
+        }
+
+        screenReceiver = ScreenReceiver.registerSelf(this);
     }
 
     private void startBatteryReceiver() {
@@ -22,10 +32,7 @@ public class LoggingService extends Service {
             return;
         }
 
-        batteryReceiver = new BatteryReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(batteryReceiver, filter);
+        batteryReceiver = BatteryReceiver.registerSelf(this);
     }
 
     @Override
@@ -33,6 +40,10 @@ public class LoggingService extends Service {
         super.onDestroy();
         if (batteryReceiver != null) {
             unregisterReceiver(batteryReceiver);
+        }
+
+        if (screenReceiver != null) {
+            unregisterReceiver(screenReceiver);
         }
     }
 

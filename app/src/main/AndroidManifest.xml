@@ -25,11 +25,17 @@
                 <action android:name="android.intent.action.BATTERY_CHANGED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receivers.ScreenReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".services.LoggingService"
-            android:exported="false">
-        </service>
+            android:exported="false"></service>
+
     </application>
 
 </manifest>
