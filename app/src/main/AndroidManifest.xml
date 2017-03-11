@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".BatteryTracker"
@@ -31,11 +32,15 @@
                 <action android:name="android.intent.action.SCREEN_ON" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receivers.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".services.LoggingService"
-            android:exported="false"></service>
-
+            android:exported="false" />
     </application>
 
 </manifest>
