@@ -5,17 +5,20 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import in.andreani.batterytracker.receivers.BatteryReceiver;
+import in.andreani.batterytracker.receivers.ChargingReceiver;
 import in.andreani.batterytracker.receivers.ScreenReceiver;
 
 public class LoggingService extends Service {
 
     private ScreenReceiver screenReceiver;
     private BatteryReceiver batteryReceiver;
+    private ChargingReceiver chargingReceiver;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startBatteryReceiver();
         startScreenReceiver();
+        startChargingReceiver();
         return START_STICKY;
     }
 
@@ -35,6 +38,14 @@ public class LoggingService extends Service {
         batteryReceiver = BatteryReceiver.registerSelf(this);
     }
 
+    private void startChargingReceiver() {
+        if (chargingReceiver != null) {
+            return;
+        }
+
+        chargingReceiver = ChargingReceiver.registerSelf(this);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -44,6 +55,10 @@ public class LoggingService extends Service {
 
         if (screenReceiver != null) {
             unregisterReceiver(screenReceiver);
+        }
+
+        if (chargingReceiver != null) {
+            unregisterReceiver(chargingReceiver);
         }
     }
 

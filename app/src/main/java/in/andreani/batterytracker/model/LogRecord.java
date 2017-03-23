@@ -10,6 +10,7 @@ public class LogRecord extends RealmObject {
 
     public static final String TYPE_BATTERY = "Battery";
     public static final String TYPE_SCREEN = "Screen";
+    public static final String TYPE_CHARGING = "Charging";
     public static final String TYPE_IDLE = "Idle";
 
     public String type;
@@ -35,6 +36,10 @@ public class LogRecord extends RealmObject {
 
     public static LogRecord getIdleRecord(long value) {
         return new LogRecord(TYPE_IDLE, System.currentTimeMillis(), value);
+    }
+
+    public static LogRecord getChargingRecord(long value) {
+        return new LogRecord(TYPE_CHARGING, System.currentTimeMillis(), value);
     }
 
 }
