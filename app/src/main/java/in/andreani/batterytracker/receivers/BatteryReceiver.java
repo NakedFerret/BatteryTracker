@@ -12,9 +12,12 @@ import io.realm.Realm;
 public class BatteryReceiver extends BroadcastReceiver {
     public static BatteryReceiver registerSelf(Context context) {
         BatteryReceiver batteryReceiver = new BatteryReceiver();
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+
         context.registerReceiver(batteryReceiver, filter);
+
         return batteryReceiver;
     }
 

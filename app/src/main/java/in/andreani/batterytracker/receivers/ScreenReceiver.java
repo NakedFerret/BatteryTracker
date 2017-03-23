@@ -9,15 +9,15 @@ import in.andreani.batterytracker.model.LogRecord;
 import io.realm.Realm;
 
 public class ScreenReceiver extends BroadcastReceiver {
-    public ScreenReceiver() {
-    }
-
     public static ScreenReceiver registerSelf(Context context) {
         ScreenReceiver screenReceiver = new ScreenReceiver();
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
+
         context.registerReceiver(screenReceiver, filter);
+
         return screenReceiver;
     }
 
