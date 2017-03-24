@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.BatteryManager;
 
 import in.andreani.batterytracker.model.LogRecord;
 import io.realm.Realm;
@@ -25,9 +24,7 @@ public class ChargingReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL;
+        boolean isCharging = intent.getAction().equals(Intent.ACTION_POWER_CONNECTED);
 
         long isChargingValue = isCharging ? 1 : 0;
 
